@@ -1,0 +1,26 @@
+{
+  "name": "number_to_vietnamese",
+  "version": "0.0.1",
+  "description": "convert number to Vietnamese words",
+  "main": "dist/n2vi.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannyphung/number_to_vietnamese.git"
+  },
+  "keywords": [
+    "vietnamese;number;convert;"
+  ],
+  "author": "Danny Phung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dannyphung/number_to_vietnamese/issues"
+  },
+  "homepage": "https://github.com/dannyphung/number_to_vietnamese#readme",
+  "dependencies": {
+    "jasmine": "^2.4.1",
+    "node-minify": "^1.3.7"
+  }
+}
