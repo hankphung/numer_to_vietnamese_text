@@ -5,7 +5,6 @@
  */
  (function(root){
  	var default_numbers=' hai ba bốn năm sáu bảy tám chín';
-
  	var currency='đồng';
  	var units=('1 một'+ default_numbers).split(' ');
  	var ch= 'lẻ mười'+default_numbers;
@@ -13,6 +12,11 @@
  	var tram=tr.split(' ');
  	var u='2 nghìn triệu tỉ'.split(' ');
  	var chuc=ch.split(' ');
+  /**
+   * additional words 
+   * @param  {[type]} a [description]
+   * @return {[type]}   [description]
+   */
  	function tenth(a)
  	{
  		var sl1=units[a[1]] ;
@@ -30,6 +34,11 @@
  		return str;
  	}
 
+  /**
+   * convert number in blocks of 3 
+   * @param  {[type]} d [description]
+   * @return {[type]}   [description]
+   */
  	function block_of_three(d)
  	{
  		_a=d+'';
@@ -53,7 +62,11 @@
  			return sl3+' '+sl12;
  		}
  	}
-
+  /**
+   * Get number from unit, to string
+   * @param  {mixed} nStr input money
+   * @return {String}  money string, removed digits
+   */
  	function formatnumber(nStr) {
  		nStr += '';
  		var x = nStr.split('.');
@@ -65,24 +78,45 @@
  		}
  		return x1 + x2;
  	};
- 	root.to_vietnamese=  function(str) {
+
+ 	function to_vietnamese(str) {
  		var str=parseInt(str)+'';//str=fixCurrency(a,1000);
- 		var i=0, j=3;
+ 		var i=0, 
  		var arr=[];
  		var index = str.length;
  		if(index==0||str=='NaN' )
  			return '';
  		var string='';
+
+    //explode number string into blocks of 3numbers and push to queue
  		while (index>=0) {
  			arr.push(str.substring(index, Math.max(index-3,0)));
  			index-=3;
  		}
+    
+    //loop though queue and convert each block 
  		for(i=arr.length-1;i>=0;i--)
  		{
  			if(arr[i]!=''&&arr[i]!='000')
  				string+=' '+block_of_three(arr[i])+' '+u[i];
  		} 
+    //remove unwanted white space
  		return string.replace(/[0-9]/g, '').replace(/  /g,' ')+' '+currency;
  	}	
+
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = to_vietnamese;
+  }
+  else {
+    if (typeof define === 'function' && define.amd) {
+      define([], function() {
+        return to_vietnamese;
+      });
+    }
+    else {
+      window.to_vietnamese = to_vietnamese;
+    }
+  }
+
  })(window)
 
