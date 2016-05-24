@@ -4,7 +4,7 @@ var compressor = require('node-minify');
 new compressor.minify({
   type: 'uglifyjs',
   fileIn: 'src/n2vi.js',
-  fileOut: './public/n2vi.min.js',
+  fileOut: './dist/n2vi.min.js',
   callback: function(err, min){
     console.log(err);
     //console.log(min); 
