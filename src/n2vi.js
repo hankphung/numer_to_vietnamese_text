@@ -81,7 +81,7 @@
 
  	function to_vietnamese(str) {
  		var str=parseInt(str)+'';//str=fixCurrency(a,1000);
- 		var i=0, 
+ 		var i=0;
  		var arr=[];
  		var index = str.length;
  		if(index==0||str=='NaN' )
@@ -114,7 +114,7 @@
       });
     }
     else {
-      window.to_vietnamese = to_vietnamese;
+      root.to_vietnamese = to_vietnamese;
     }
   }
 
