@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+    <style>
+    div {
+        padding: 50px;
+    }
+    </style>
+    <script src="dist/n2vi.min.js"></script>
+    <script>
+    function translate(e) {
+        var result = document.getElementById('result');
+        console.log(e)
+        if (e.validity.valid) {
+            result.innerHTML = to_vietnamese(e.value)
+        }
+    }
+    </script>
+</head>
+
+<body>
+    <div>
+        <h3>
+		DEMO
+	</h3>
+        <H4>Number to Vietnamese money (Đổi tiền số sang tiền chữ)</H4>
+        <input type="number" onkeyup="translate(this)"onchange="translate(this)">
+        <p id="result">
+        </p>
+    </div>
+</body>
+
+</html>
