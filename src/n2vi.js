@@ -1,11 +1,11 @@
 /**
  * Convert from number to Vietnamese string.
- * By Dong Hung Phung <donghung.viethanit@gmail.com> 
+ * By Dong Hung Phung <donghung.viethanit@gmail.com>
  * @type {String}
  */
- (function(root){
+ (function(){
   var default_numbers=' hai ba bốn năm sáu bảy tám chín';
-  
+
   var units=('1 một'+ default_numbers).split(' ');
   var ch= 'lẻ mười'+default_numbers;
   var tr='không một'+default_numbers;
@@ -13,7 +13,7 @@
   var u='2 nghìn triệu tỉ'.split(' ');
   var chuc=ch.split(' ');
   /**
-   * additional words 
+   * additional words
    * @param  {[type]} a [description]
    * @return {[type]}   [description]
    */
@@ -28,14 +28,14 @@
     {
       append=' mươi';
       if(a[1]==1)
-        sl1=' mốt'; 
+        sl1=' mốt';
     }
     var str=sl2+''+append+' '+sl1;
     return str;
   }
 
   /**
-   * convert number in blocks of 3 
+   * convert number in blocks of 3
    * @param  {[type]} d [description]
    * @return {[type]}   [description]
    */
@@ -95,8 +95,7 @@
       arr.push(str.substring(index, Math.max(index-3,0)));
       index-=3;
     }
-    
-    //loop though queue and convert each block 
+    //loop though queue and convert each block
     for(i=arr.length-1;i>=0;i--)
     {
       if(arr[i]!=''&&arr[i]!='000'){
@@ -104,14 +103,13 @@
         if(u[i])
           result.push(u[i]);
       }
-    } 
+    }
     if(currency)
     result.push(currency)
     string=result.join(' ')
     //remove unwanted white space
     return string.replace(/[0-9]/g, '').replace(/  /g,' ').replace(/ $/,'');
-     
-  } 
+  }
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = to_vietnamese;
@@ -122,9 +120,8 @@
         return to_vietnamese;
       });
     }
-    else {
-      root.to_vietnamese = to_vietnamese;
+    else if(typeof window !== undefined){
+      window.to_vietnamese = to_vietnamese;
     }
   }
-
- })(window)
+ })()
