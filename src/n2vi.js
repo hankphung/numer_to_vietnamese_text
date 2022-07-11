@@ -1,66 +1,63 @@
 /**
  * Convert from number to Vietnamese string.
  * By Dong Hung Phung <donghung.viethanit@gmail.com>
- * @type {String}
  */
- (function(){
+(function(){
   var default_numbers=' hai ba bốn năm sáu bảy tám chín';
+  var dict = {
+    units: ('? một'+ default_numbers).split(' '),
+    tens: ('lẻ mười'+default_numbers).split(' '),
+    hundreds: ('không một'+default_numbers).split(' '),
+  }
+  const tram = 'trăm';
+  var digits='x nghìn triệu tỉ'.split(' ');
 
-  var units=('1 một'+ default_numbers).split(' ');
-  var ch= 'lẻ mười'+default_numbers;
-  var tr='không một'+default_numbers;
-  var tram=tr.split(' ');
-  var u='2 nghìn triệu tỉ'.split(' ');
-  var chuc=ch.split(' ');
   /**
    * additional words
-   * @param  {[type]} a [description]
-   * @return {[type]}   [description]
+   * @param  {string} block_of_2 [description]
+   * @return {string}   [description]
    */
-  function tenth(a)
+  function tenth(block_of_2)
   {
-    var sl1=units[a[1]] ;
-    var sl2=chuc[a[0]];
-    var append='';
-    if(a[0]>0 && a[1]==5)
+    var sl1=dict.units[block_of_2[1]] ;
+    var result = [dict.tens[block_of_2[0]]]
+    if(block_of_2[0] > 0 && block_of_2[1] == 5)
       sl1='lăm';
-    if(a[0]>1)
+    if(block_of_2[0]>1)
     {
-      append=' mươi';
-      if(a[1]==1)
-        sl1=' mốt';
+      result.push('mươi');
+      if(block_of_2[1]==1)
+        sl1='mốt';
     }
-    var str=sl2+''+append+' '+sl1;
-    return str;
+    if(sl1!='?') result.push(sl1);
+    return result.join(' ');
   }
 
   /**
    * convert number in blocks of 3
-   * @param  {[type]} d [description]
-   * @return {[type]}   [description]
+   * @param  {string} block "block of 3 mumbers"
+   * @return {string}   [description]
    */
-  function block_of_three(d)
+  function block_of_three(block)
   {
-    _a=d+'';
-    if(d=='000')return '';
-    switch(_a.length)
-    {
-      case 0:
-      return '';
 
+    switch(block.length)
+    {
       case 1:
-      return units[_a] ;
+        return dict.units[block] ;
 
       case 2:
-      return tenth(_a);
+        return tenth(block);
 
       case 3:
-      sl12='';
-      if(_a.slice(1,3)!='00')
-        sl12=tenth(_a.slice(1,3));
-      sl3=tram[_a[0]]+' trăm';
-      return sl3+' '+sl12;
+        var result = [dict.hundreds[block[0]], tram];
+        if(block.slice(1,3)!='00'){
+          var sl12 = tenth(block.slice(1,3));
+          result.push(sl12);
+        }
+        return result.join(' ');
     }
+    return '';
   }
   /**
    * Get number from unit, to string
@@ -79,16 +76,14 @@
     return x1 + x2;
   };
 
-  function to_vietnamese(str,currency) {
-    var str=parseInt(str)+'';
-    //str=fixCurrency(a,1000);
-    var i=0;
-    var arr=[];
+  function to_vietnamese(input, currency) {
+    var str = parseInt(input) + '';
     var index = str.length;
-    var result=[]
     if(index==0||str=='NaN' )
       return '';
-    var string='';
+    var i=0;
+    var arr=[];
+    var result=[]
 
     //explode number string into blocks of 3numbers and push to queue
     while (index>=0) {
@@ -96,32 +91,25 @@
       index-=3;
     }
     //loop though queue and convert each block
-    for(i=arr.length-1;i>=0;i--)
+    for(i=arr.length-1; i>=0; i--)
     {
-      if(arr[i]!=''&&arr[i]!='000'){
+      if(arr[i]!='' && arr[i]!='000'){
         result.push(block_of_three(arr[i]))
-        if(u[i])
-          result.push(u[i]);
+        if(digits[i] && digits[i] != 'x')
+          result.push(digits[i]);
       }
     }
     if(currency)
-    result.push(currency)
-    string=result.join(' ')
+      result.push(currency);
     //remove unwanted white space
-    return string.replace(/[0-9]/g, '').replace(/  /g,' ').replace(/ $/,'');
+    return result.join(' ')
   }
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = to_vietnamese;
   }
-  else {
-    if (typeof define === 'function' && define.amd) {
-      define([], function() {
-        return to_vietnamese;
-      });
-    }
-    else if(typeof window !== undefined){
-      window.to_vietnamese = to_vietnamese;
-    }
+  else  if(typeof window !== undefined){
+    window.to_vietnamese = to_vietnamese;
   }
- })()
+  return to_vietnamese
+})();

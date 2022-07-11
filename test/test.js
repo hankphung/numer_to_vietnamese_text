@@ -11,7 +11,7 @@ describe('Number to Vietnamese text', function() {
     assert.equal(to_vietnamese(105000),"một trăm lẻ năm nghìn");
     assert.equal(to_vietnamese(21000),"hai mươi mốt nghìn");
    });
-    it("should add currency",function(){
-    assert.equal(to_vietnamese(21000,'đồng'),"hai mươi mốt nghìn đồng")
-    });
+   it("should add currency",function(){
+   assert.equal(to_vietnamese(21000,'đồng'),"hai mươi mốt nghìn đồng")
+   });
 })

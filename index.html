@@ -13,7 +13,6 @@
     <script>
     function convert_text(e) {
         var result = document.getElementById('result');
-        console.log(e)
         if (e.validity.valid) {
             result.innerHTML = to_vietnamese(e.value)
         }
