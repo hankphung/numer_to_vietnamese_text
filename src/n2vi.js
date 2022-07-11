@@ -10,7 +10,7 @@
     hundreds: ('không một'+default_numbers).split(' '),
   }
   const tram = 'trăm';
-  var digits='x nghìn triệu tỉ'.split(' ');
+  var digits='x nghìn triệu tỉ nghìn'.split(' ');
 
   /**
    * additional words
@@ -76,6 +76,11 @@
     return x1 + x2;
   };
 
+  function digit_counting(i, digit_counter){
+    var result = digits[i]
+
+    return result
+  }
   function to_vietnamese(input, currency) {
     var str = parseInt(input) + '';
     var index = str.length;
@@ -91,12 +96,23 @@
       index-=3;
     }
     //loop though queue and convert each block
+    var digit_counter = 0;
+    var digit;
+    var adding;
     for(i=arr.length-1; i>=0; i--)
     {
-      if(arr[i]!='' && arr[i]!='000'){
+      if(arr[i] == '000')
+      {
+        digit_counter+=1;
+        if(i == 2 && digit_counter == 2){
+          result.push(digit_counting(i+1,digit_counter));
+        }
+      }
+      else if(arr[i]!=''){
+        digit_counter = 0
         result.push(block_of_three(arr[i]))
-        if(digits[i] && digits[i] != 'x')
-          result.push(digits[i]);
+        digit = digit_counting(i,digit_counter);
+        if(digit && digit != 'x')  result.push(digit);
       }
     }
     if(currency)
