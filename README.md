@@ -1,6 +1,6 @@
-# number_to_vietnamese
-Convert numbers to Vietnamese words. 
-Supports large number, up to hundreds of billion
+# Vietnamese Money Number to Text Converter: Transforming Numeric Values into Textual Representations
+The "Vietnamese Money Number to Text Converter" is a JavaScript library designed to seamlessly transform numeric values of currency amounts into their corresponding textual representations in the Vietnamese language. This library provides an elegant solution to enhance the user experience by enabling the display of currency amounts in a human-readable format, making financial information more accessible and user-friendly.
+
 
 # USAGE:
 ```js
