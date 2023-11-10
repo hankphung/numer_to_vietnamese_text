@@ -2,130 +2,98 @@
  * Convert from number to Vietnamese string.
  * By Dong Hung Phung <donghung.viethanit@gmail.com>
  */
-(function(){
-  var default_numbers=' hai ba bốn năm sáu bảy tám chín';
-  var dict = {
-    units: ('? một'+ default_numbers).split(' '),
-    tens: ('lẻ mười'+default_numbers).split(' '),
-    hundreds: ('không một'+default_numbers).split(' '),
-  }
+const toVietnamese = (function () {
+  const defaultNumbers = ' hai ba bốn năm sáu bảy tám chín';
+  const dict = {
+    units: ('? một' + defaultNumbers).split(' '),
+    tens: ('lẻ mười' + defaultNumbers).split(' '),
+    hundreds: ('không một' + defaultNumbers).split(' '),
+  };
   const tram = 'trăm';
-  var digits='x nghìn triệu tỉ nghìn'.split(' ');
+  const digits = 'x nghìn triệu tỉ nghìn'.split(' ');
 
-  /**
-   * additional words
-   * @param  {string} block_of_2 [description]
-   * @return {string}   [description]
-   */
-  function tenth(block_of_2)
-  {
-    var sl1=dict.units[block_of_2[1]] ;
-    var result = [dict.tens[block_of_2[0]]]
-    if(block_of_2[0] > 0 && block_of_2[1] == 5)
-      sl1='lăm';
-    if(block_of_2[0]>1)
-    {
+  function tenth(twoDigitBlock) {
+    let secondDigitWord = dict.units[twoDigitBlock[1]];
+    const result = [dict.tens[twoDigitBlock[0]]];
+    if (twoDigitBlock[0] > 0 && twoDigitBlock[1] == 5) secondDigitWord = 'lăm';
+    if (twoDigitBlock[0] > 1) {
       result.push('mươi');
-      if(block_of_2[1]==1)
-        sl1='mốt';
+      if (twoDigitBlock[1] == 1) secondDigitWord = 'mốt';
     }
-    if(sl1!='?') result.push(sl1);
+    if (secondDigitWord !== '?') result.push(secondDigitWord);
     return result.join(' ');
   }
 
-  /**
-   * convert number in blocks of 3
-   * @param  {string} block "block of 3 mumbers"
-   * @return {string}   [description]
-   */
-  function block_of_three(block)
-  {
-
-    switch(block.length)
-    {
+  function blockOfThree(threeDigitBlock) {
+    switch (threeDigitBlock.length) {
       case 1:
-        return dict.units[block] ;
-
+        return dict.units[threeDigitBlock];
       case 2:
-        return tenth(block);
-
+        return tenth(threeDigitBlock);
       case 3:
-        var result = [dict.hundreds[block[0]], tram];
-        if(block.slice(1,3)!='00'){
-          var sl12 = tenth(block.slice(1,3));
-          result.push(sl12);
+        const result = [dict.hundreds[threeDigitBlock[0]], tram];
+        if (threeDigitBlock.slice(1, 3) !== '00') {
+          const secondAndThirdDigitWords = tenth(threeDigitBlock.slice(1, 3));
+          result.push(secondAndThirdDigitWords);
         }
         return result.join(' ');
     }
     return '';
   }
-  /**
-   * Get number from unit, to string
-   * @param  {mixed} nStr input money
-   * @return {String}  money string, removed digits
-   */
-  function formatnumber(nStr) {
-    nStr += '';
-    var x = nStr.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-      x1 = x1.replace(rgx, '$1' + ',' + '$2');
+
+  function formatNumber(numberString) {
+    numberString += '';
+    const numberParts = numberString.split('.');
+    let integerPart = numberParts[0];
+    const decimalPart = numberParts.length > 1 ? '.' + numberParts[1] : '';
+    const regex = /(\d+)(\d{3})/;
+    while (regex.test(integerPart)) {
+      integerPart = integerPart.replace(regex, '$1' + ',' + '$2');
     }
-    return x1 + x2;
-  };
-
-  function digit_counting(i, digit_counter){
-    var result = digits[i]
-
-    return result
+    return integerPart + decimalPart;
   }
-  function to_vietnamese(input, currency) {
-    var str = parseInt(input) + '';
-    var index = str.length;
-    if(index==0||str=='NaN' )
-      return '';
-    var i=0;
-    var arr=[];
-    var result=[]
 
-    //explode number string into blocks of 3numbers and push to queue
-    while (index>=0) {
-      arr.push(str.substring(index, Math.max(index-3,0)));
-      index-=3;
+  function digitCounting(index, digitCounter) {
+    return digits[index];
+  }
+
+  function toVietnamese(input, currency) {
+    const numberString = parseInt(input) + '';
+    let currentIndex = numberString.length;
+    if (currentIndex === 0 || numberString === 'NaN') return '';
+    const numberBlocks = [];
+    const result = [];
+
+    while (currentIndex >= 0) {
+      numberBlocks.push(numberString.substring(currentIndex, Math.max(currentIndex - 3, 0)));
+      currentIndex -= 3;
     }
-    //loop though queue and convert each block
-    var digit_counter = 0;
-    var digit;
-    var adding;
-    for(i=arr.length-1; i>=0; i--)
-    {
-      if(arr[i] == '000')
-      {
-        digit_counter+=1;
-        if(i == 2 && digit_counter == 2){
-          result.push(digit_counting(i+1,digit_counter));
+
+    let digitCounter = 0;
+    let digit;
+    for (let i = numberBlocks.length - 1; i >= 0; i--) {
+      if (numberBlocks[i] === '000') {
+        digitCounter += 1;
+        if (i === 2 && digitCounter === 2) {
+          result.push(digitCounting(i + 1, digitCounter));
         }
-      }
-      else if(arr[i]!=''){
-        digit_counter = 0
-        result.push(block_of_three(arr[i]))
-        digit = digit_counting(i,digit_counter);
-        if(digit && digit != 'x')  result.push(digit);
+      } else if (numberBlocks[i] !== '') {
+        digitCounter = 0;
+        result.push(blockOfThree(numberBlocks[i]));
+        digit = digitCounting(i, digitCounter);
+        if (digit && digit !== 'x') result.push(digit);
       }
     }
-    if(currency)
-      result.push(currency);
-    //remove unwanted white space
-    return result.join(' ')
+
+    if (currency) result.push(currency);
+    return result.join(' ');
   }
 
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = to_vietnamese;
+    module.exports = toVietnamese;
+  } else if (typeof window !== 'undefined') {
+    window.toVietnamese = toVietnamese;
   }
-  else  if(typeof window !== undefined){
-    window.to_vietnamese = to_vietnamese;
-  }
-  return to_vietnamese
+
+  return toVietnamese;
 })();
