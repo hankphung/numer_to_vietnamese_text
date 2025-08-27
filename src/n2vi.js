@@ -6,7 +6,22 @@
     const DIGIT_WORDS   = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
     const TEN_WORDS     = ['lẻ', 'mười', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
     const HUNDRED_WORDS = DIGIT_WORDS;
-    const SCALE_UNITS   = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn'];
+
+    /**
+     * Generate the correct Vietnamese scale unit for any 3-digit group index.
+     *  0 → '', 1 → 'nghìn', 2 → 'triệu', 3 → 'tỷ',
+     *  4 → 'nghìn tỷ', 5 → 'triệu tỷ', 6 → 'tỷ tỷ', etc.
+     */
+    function getScaleUnit(idx) {
+      const base = ['', 'nghìn', 'triệu', 'tỷ'];
+      if (idx < 4) return base[idx];
+      const pos = idx - 3;
+      if (pos < 4) return `${base[pos]} tỷ`;
+      // for very large numbers, repeat 'tỷ'
+      const repeatCount = Math.floor(pos / 4) + 1;
+      const unit = base[pos % 4] || '';
+      return [unit, 'tỷ'.repeat(repeatCount)].filter(Boolean).join(' ');
+    }
 
     function convertTens(twoDigits) {
         const [tens, units] = twoDigits.split('').map(Number);
@@ -49,7 +64,7 @@
         const words = blocks.map((blk, idx) => {
             if (blk === '000') return null;
             const scaleIdx = blocks.length - 1 - idx;
-            return [ convertThreeDigits(blk), SCALE_UNITS[scaleIdx] ]
+            return [ convertThreeDigits(blk), getScaleUnit(scaleIdx) ]
                      .filter(Boolean).join(' ');
         }).filter(Boolean);
 
