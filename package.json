@@ -22,6 +22,6 @@
   "homepage": "https://github.com/hankphung/number_to_vietnamese#readme",
   "devDependencies": {
     "uglify-js": "^3.16.2",
-    "mocha": "^9.2.2"
+    "mocha": "^11.7.5"
   }
 }
